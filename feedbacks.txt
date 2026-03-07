@@ -1,0 +1,50 @@
+---ENTRY---
+NAME:User
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:Nice Website
+TIME:06 Mar 2026, 09:31 PM
+---ENTRY---
+NAME:Puja Shah
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:🔥🔥🔥
+TIME:06 Mar 2026, 09:32 PM
+---ENTRY---
+NAME:Avishek Mehta
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:Website is too good and useful ☠️
+TIME:06 Mar 2026, 09:37 PM
+---ENTRY---
+NAME:Sujan Rajbanshi
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:This website is really good in future and I think we need other more options there
+TIME:06 Mar 2026, 09:39 PM
+---ENTRY---
+NAME:Pranjal Nepal
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:Really helpful and will be very beneficial
+TIME:06 Mar 2026, 09:42 PM
+---ENTRY---
+NAME:Menuka Basnet
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:"This website is really good and helpful"
+TIME:06 Mar 2026, 10:03 PM
+---ENTRY---
+NAME:Lucky bhagat
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:Really helpful
+TIME:07 Mar 2026, 07:14 AM
+---ENTRY---
+NAME:Khushi Bhagat
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:I'm satisfied
+TIME:07 Mar 2026, 07:15 AM
+---ENTRY---
+NAME:Manjila Ojha
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:Very helpful
+TIME:07 Mar 2026, 12:13 PM
+---ENTRY---
+NAME:Laxmi bhatta
+RATING:⭐⭐⭐⭐⭐ Excellent
+COMMENT:This website is Usefull and informative.
+TIME:07 Mar 2026, 02:42 PM
