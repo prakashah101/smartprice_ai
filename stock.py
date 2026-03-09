@@ -11,21 +11,8 @@ st.set_page_config(
     layout="centered"
 )
 
-# Google Analytics
-st.markdown("""
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VLRG0TC56H"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-VLRG0TC56H');
-</script>
-""", unsafe_allow_html=True)
-
 #css
 st.markdown("""
-<meta name="google-site-verification" content="yKhdhjndKh5GNFNm7ueb9YSDMf4irIXr7hNUIucX_PA" />
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Poppins:wght@300;400;600;700&display=swap');
 
