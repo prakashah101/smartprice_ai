@@ -11,9 +11,6 @@ st.set_page_config(
     layout="centered"
 )
 
-# Google Search Console verification
-st.markdown('<meta name="google-site-verification" content="yKhdhjndKh5GNFNm7ueb9YSDMf4irIXr7hNUIucX_PA" />', unsafe_allow_html=True)
-
 #css
 st.markdown("""
 <style>
