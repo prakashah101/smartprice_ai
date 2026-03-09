@@ -4,12 +4,15 @@ import pandas as pd
 import joblib
 import os
 import matplotlib.pyplot as plt
+import streamlit_analytics2 as analytics
 
 st.set_page_config(
     page_title="SMARTPRICE AI",
     page_icon="🚀",
     layout="centered"
 )
+
+analytics.start_tracking()
 
 #css
 st.markdown("""
@@ -416,3 +419,4 @@ st.divider()
 
 st.caption("Built with Streamlit · Linear Regression · NEPSE Stock Data")
 st.caption("2026 © Team Rudraksha")
+analytics.stop_tracking()

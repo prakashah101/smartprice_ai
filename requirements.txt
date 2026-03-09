@@ -6,3 +6,4 @@ joblib
 matplotlib
 pytz
 requests
+streamlit-analytics2
