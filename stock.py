@@ -4,7 +4,6 @@ import pandas as pd
 import joblib
 import os
 import matplotlib.pyplot as plt
-import datetime, pytz, requests, base64, json
 
 st.set_page_config(
     page_title="SMARTPRICE AI",
@@ -12,13 +11,13 @@ st.set_page_config(
     layout="centered"
 )
 
-# ── CSS ───────────────────────────────────────────────────────
+#css
 st.markdown("""
 <meta name="google-site-verification" content="yKhdhjndKh5GNFNm7ueb9YSDMf4irIXr7hNUIucX_PA" />
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Poppins:wght@300;400;600;700&display=swap');
 
-html, body, [class*="css"] {
+html, body, [class*="css"]  {
     font-family: 'Poppins', sans-serif;
     background: radial-gradient(circle at top left, #0F172A, #020617 60%);
     color: #E2E8F0;
@@ -45,9 +44,11 @@ html, body, [class*="css"] {
 .hero::after {
     content: '';
     position: absolute;
-    top: -60%; left: 50%;
+    top: -60%;
+    left: 50%;
     transform: translateX(-50%);
-    width: 70%; height: 120%;
+    width: 70%;
+    height: 120%;
     background: radial-gradient(ellipse, rgba(99,102,241,0.08) 0%, transparent 70%);
     pointer-events: none;
 }
@@ -61,6 +62,7 @@ html, body, [class*="css"] {
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: none;
     filter: drop-shadow(0 0 20px rgba(56,189,248,0.4));
 }
 
@@ -73,14 +75,14 @@ html, body, [class*="css"] {
 }
 
 .team {
-    display: inline-block;
-    padding: 6px 18px;
-    border-radius: 30px;
-    border: 1px solid #38BDF8;
-    color: #38BDF8;
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    margin-bottom: 15px;
+    display:inline-block;
+    padding:6px 18px;
+    border-radius:30px;
+    border:1px solid #38BDF8;
+    color:#38BDF8;
+    font-size:0.7rem;
+    letter-spacing:2px;
+    margin-bottom:15px;
 }
 
 .section-label {
@@ -92,60 +94,8 @@ html, body, [class*="css"] {
     margin: 1.5rem 0 1rem;
 }
 
-.pro-banner {
-    background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(239,68,68,0.12));
-    border: 1px solid rgba(245,158,11,0.55);
-    border-radius: 14px;
-    padding: 0.75rem 1.2rem;
-    text-align: center;
-    color: #FCD34D;
-    font-weight: 700;
-    font-size: 0.88rem;
-    margin-bottom: 1.2rem;
-    letter-spacing: 0.5px;
-}
-
-.paywall-box {
-    background: linear-gradient(145deg, #060D1F, #0D1A2D);
-    border: 1.5px solid rgba(245,158,11,0.45);
-    border-radius: 22px;
-    padding: 2.2rem 1.8rem 2rem;
-    text-align: center;
-    margin: 0.5rem 0 1.5rem;
-}
-
-.price-tag {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.6rem;
-    font-weight: 900;
-    background: linear-gradient(90deg, #F59E0B, #EF4444);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1.1;
-}
-
-.feature-list {
-    margin: 1rem auto 1.4rem;
-    display: inline-block;
-    text-align: left;
-    font-size: 0.86rem;
-    color: #CBD5E1;
-    line-height: 2;
-}
-
-.esewa-box {
-    background: rgba(245,158,11,0.08);
-    border: 1px solid rgba(245,158,11,0.3);
-    border-radius: 13px;
-    padding: 0.85rem 1rem;
-    margin-top: 1.1rem;
-    font-size: 0.82rem;
-    color: #F59E0B;
-    line-height: 1.9;
-}
-
 div[data-testid="stButton"] > button {
-    background: linear-gradient(135deg, #0EA5E9, #6366F1);
+    background: linear-gradient(135deg,#0EA5E9,#6366F1);
     border-radius: 12px;
     padding: 0.8rem 2rem;
     font-weight: 700;
@@ -169,7 +119,7 @@ div[data-testid="stMetric"] {
 }
 div[data-testid="stMetric"]:hover {
     border-color: rgba(99,102,241,0.8);
-    box-shadow: 0 0 40px rgba(99,102,241,0.35);
+    box-shadow: 0 0 40px rgba(99,102,241,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
     transform: translateY(-2px);
 }
 </style>
@@ -181,146 +131,22 @@ div[data-testid="stMetric"]:hover {
 </div>
 """, unsafe_allow_html=True)
 
-# ── CONSTANTS ─────────────────────────────────────────────────
 STOCKS = {
-    'Nepal Doorsanchar':           {'close': 'models/model_doorsanchar.pkl', 'high': 'models/model_doorsanchar_high.pkl', 'low': 'models/model_doorsanchar_low.pkl', 'pro': False},
-    'Nabil Bank 🔒':               {'close': 'models/model_nabil.pkl',       'high': 'models/model_nabil_high.pkl',       'low': 'models/model_nabil_low.pkl',       'pro': True},
-    'Citizen Investment Trust 🔒': {'close': 'models/model_citizen.pkl',     'high': 'models/model_citizen_high.pkl',     'low': 'models/model_citizen_low.pkl',     'pro': True},
+    'Nabil Bank':               {'close': 'models/model_nabil.pkl',       'high': 'models/model_nabil_high.pkl',       'low': 'models/model_nabil_low.pkl'},
+    'Nepal Doorsanchar':        {'close': 'models/model_doorsanchar.pkl', 'high': 'models/model_doorsanchar_high.pkl', 'low': 'models/model_doorsanchar_low.pkl'},
+    'Citizen Investment Trust': {'close': 'models/model_citizen.pkl',     'high': 'models/model_citizen_high.pkl',     'low': 'models/model_citizen_low.pkl'},
 }
 
-FEATURES      = ['PREV_CLOSE', 'MA_5', 'MA_10', 'DAILY_RANGE', 'MOMENTUM', 'PREV_HIGH', 'PREV_LOW']
-GITHUB_TOKEN  = st.secrets["GITHUB_TOKEN"]
-GITHUB_REPO   = st.secrets["GITHUB_REPO"]
-CODES_FILE    = "pro_codes.txt"
-FEEDBACK_FILE = "feedbacks.txt"
-NPT           = pytz.timezone("Asia/Kathmandu")
+FEATURES = ['PREV_CLOSE', 'MA_5', 'MA_10', 'DAILY_RANGE', 'MOMENTUM', 'PREV_HIGH', 'PREV_LOW']
 
-# ── SESSION STATE ─────────────────────────────────────────────
-if 'pro_unlocked' not in st.session_state:
-    st.session_state.pro_unlocked = False
-
-# ── HELPERS ───────────────────────────────────────────────────
 def load_model(path):
     if not os.path.exists(path):
         return None
     return joblib.load(path)
 
-def _gh_headers():
-    return {"Authorization": f"token {GITHUB_TOKEN}", "Content-Type": "application/json"}
-
-def _gh_get(filename):
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
-    r   = requests.get(url, headers=_gh_headers())
-    if r.status_code == 200:
-        data    = r.json()
-        content = base64.b64decode(data["content"]).decode("utf-8")
-        return content, data["sha"]
-    return "", None
-
-def _gh_put(filename, content, sha, message):
-    url     = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
-    encoded = base64.b64encode(content.encode("utf-8")).decode("utf-8")
-    payload = {"message": message, "content": encoded}
-    if sha:
-        payload["sha"] = sha
-    r = requests.put(url, headers=_gh_headers(), data=json.dumps(payload))
-    return r.status_code in [200, 201]
-
-def verify_and_burn_code(entered):
-    entered = entered.strip().upper()
-    if not entered:
-        return False, "Please enter a code."
-    try:
-        content, sha = _gh_get(CODES_FILE)
-        if not content:
-            return False, "Code system unavailable. Contact support."
-        lines     = content.strip().split("\n")
-        new_lines = []
-        found = used = False
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            if line == f"UNUSED:{entered}":
-                new_lines.append(f"USED:{entered}")
-                found = True
-            elif line == f"USED:{entered}":
-                used = True
-                new_lines.append(line)
-            else:
-                new_lines.append(line)
-        if used:
-            return False, "❌ This code has already been used. Each code is single-use only."
-        if not found:
-            return False, "❌ Invalid code. Please check and try again."
-        updated = "\n".join(new_lines) + "\n"
-        ok = _gh_put(CODES_FILE, updated, sha, f"burn code: {entered}")
-        if ok:
-            return True, "✅ Code verified! PRO access unlocked."
-        else:
-            return False, "❌ Could not verify. Please try again."
-    except Exception as e:
-        return False, f"❌ Error: {e}"
-
-# ── PRO BANNER ────────────────────────────────────────────────
-if st.session_state.pro_unlocked:
-    st.markdown("""
-    <div class="pro-banner">
-        🏆 PRO ACCESS ACTIVE — Nabil Bank & Citizen Investment Trust Unlocked
-    </div>
-    """, unsafe_allow_html=True)
-
-# ── STOCK SELECTOR ────────────────────────────────────────────
 st.markdown('<div class="section-label">Select Stock</div>', unsafe_allow_html=True)
-stock_name = st.selectbox("", list(STOCKS.keys()), label_visibility="collapsed")
-info       = STOCKS[stock_name]
-is_locked  = info['pro'] and not st.session_state.pro_unlocked
-clean_name = stock_name.replace(" 🔒", "")
-
-# ── PAYWALL ───────────────────────────────────────────────────
-if is_locked:
-    st.markdown(f"""
-    <div class="paywall-box">
-        <div style="font-size:2.8rem; margin-bottom:0.4rem;">🔒</div>
-        <div style="font-family:'Orbitron',sans-serif; font-size:1.05rem; color:#F1F5F9; font-weight:700; margin-bottom:0.4rem;">
-            {clean_name} — PRO Only
-        </div>
-        <div style="color:#94A3B8; font-size:0.83rem; margin-bottom:1.1rem;">
-            Upgrade to PRO to unlock Nabil Bank & Citizen Investment Trust
-        </div>
-        <div class="price-tag">NPR 59<span style="font-size:1rem; color:#94A3B8; -webkit-text-fill-color:#94A3B8;">/month</span></div>
-        <div class="feature-list">
-            ✅ &nbsp;Nabil Bank predictions<br>
-            ✅ &nbsp;Citizen Investment Trust predictions<br>
-            ✅ &nbsp;BUY / SELL signals<br>
-            ✅ &nbsp;Predicted High &amp; Low prices<br>
-            ✅ &nbsp;Full summary table &amp; chart
-        </div>
-        <div class="esewa-box">
-            💳 &nbsp;Pay via <strong>eSewa:</strong> &nbsp;<strong>smartpriceai@gmail.com</strong><br>
-            📱 &nbsp;WhatsApp: &nbsp;<strong>+977-9805357571</strong><br>
-            <span style="color:#94A3B8; font-size:0.78rem;">
-                Send payment screenshot → receive your PRO code instantly
-            </span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="section-label">Enter PRO Code</div>', unsafe_allow_html=True)
-    code_input = st.text_input("", placeholder="e.g. SP-A1B2C3", label_visibility="collapsed")
-
-    if st.button("🔓 Unlock PRO Access", use_container_width=True):
-        with st.spinner("Verifying code..."):
-            success, msg = verify_and_burn_code(code_input)
-        if success:
-            st.session_state.pro_unlocked = True
-            st.success(msg)
-            st.rerun()
-        else:
-            st.error(msg)
-    st.stop()
-
-# ── LOAD MODELS ───────────────────────────────────────────────
+stock_name  = st.selectbox("", list(STOCKS.keys()), label_visibility="collapsed")
+info        = STOCKS[stock_name]
 model_close = load_model(info['close'])
 model_high  = load_model(info['high'])
 model_low   = load_model(info['low'])
@@ -334,7 +160,6 @@ if not model_high or not model_low:
 
 st.divider()
 
-# ── INPUT FORM ────────────────────────────────────────────────
 st.markdown('<div class="section-label">Enter Today\'s Data</div>', unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
@@ -354,7 +179,6 @@ st.info(f"Daily Range (auto-calculated): **Rs. {daily_range:.2f}**")
 
 st.divider()
 
-# ── PREDICT ───────────────────────────────────────────────────
 if st.button("Predict Tomorrow's Prices →", use_container_width=True):
     X = np.array([[prev_close, ma5, ma10, daily_range, momentum, prev_high, prev_low]])
 
@@ -368,7 +192,7 @@ if st.button("Predict Tomorrow's Prices →", use_container_width=True):
     conf_low   = pred_close - mae_approx
     conf_high  = pred_close + mae_approx
 
-    st.markdown(f'<div class="section-label">Tomorrow\'s Predictions — {clean_name}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-label">Tomorrow\'s Predictions — {stock_name}</div>', unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
     c1.metric("Predicted Close", f"Rs. {pred_close:.2f}", f"{change:+.2f} ({change_pct:+.2f}%)")
@@ -379,11 +203,15 @@ if st.button("Predict Tomorrow's Prices →", use_container_width=True):
 
     st.divider()
 
-    # GRAPH
+    #                                  GRAPH 
+    today     = [prev_close, high, low]
+    tomorrow  = [pred_close, pred_high, pred_low]
+    labels    = ['Close', 'High', 'Low']
+
     plt.figure(figsize=(12, 4))
-    plt.plot(['Close', 'High', 'Low'], [prev_close, high, low],       label='Today',    color='blue')
-    plt.plot(['Close', 'High', 'Low'], [pred_close, pred_high, pred_low], label='Tomorrow', color='red', linestyle='--')
-    plt.title(f'{clean_name} — Today vs Tomorrow Predicted')
+    plt.plot(labels, today,    label='Today',     color='blue')
+    plt.plot(labels, tomorrow, label='Tomorrow',  color='red', linestyle='--')
+    plt.title(f'{stock_name} — Today vs Tomorrow Predicted')
     plt.ylabel('Price (Rs.)')
     plt.legend()
     plt.tight_layout()
@@ -404,22 +232,31 @@ if st.button("Predict Tomorrow's Prices →", use_container_width=True):
 
     if change > 0:
         st.success(f"📈 BUY Signal — Price expected to rise by Rs. {change:.2f} ({change_pct:+.2f}%)")
+       
     else:
         st.error(f"📉 SELL Signal — Price expected to fall by Rs. {abs(change):.2f} ({change_pct:+.2f}%)")
-
+        
     st.markdown("""
         <div style="text-align:center; margin-top:1rem; font-size:0.75rem; color:#64748B;">
-        ⚠️ SmartPrice AI is an ML-based tool. Predictions may not be accurate.
+        ⚠️ SmartPrice AI is an ML-based tool. Predictions may not be accurate. 
         Always do your own research before investing.
         </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
     st.divider()
 
 
-# ── FEEDBACK SYSTEM ───────────────────────────────────────────
+# ── FEEDBACK SYSTEM 
+import datetime, pytz, requests, base64, json
+
+GITHUB_TOKEN  = st.secrets["GITHUB_TOKEN"]
+GITHUB_REPO   = st.secrets["GITHUB_REPO"]
+FEEDBACK_FILE = "feedbacks.txt"
+NPT           = pytz.timezone("Asia/Kathmandu")
+
 def github_get_file():
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{FEEDBACK_FILE}"
-    r   = requests.get(url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
+    url     = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{FEEDBACK_FILE}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    r = requests.get(url, headers=headers)
     if r.status_code == 200:
         data    = r.json()
         content = base64.b64decode(data["content"]).decode("utf-8")
@@ -455,10 +292,11 @@ def save_feedback(name, rating, comment):
         updated   = (existing.strip() + "\n---ENTRY---\n" + new_entry).strip()
         encoded   = base64.b64encode(updated.encode("utf-8")).decode("utf-8")
         url       = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{FEEDBACK_FILE}"
+        headers   = {"Authorization": f"token {GITHUB_TOKEN}", "Content-Type": "application/json"}
         payload   = {"message": f"feedback: {name}", "content": encoded}
         if sha:
             payload["sha"] = sha
-        r = requests.put(url, headers=_gh_headers(), data=json.dumps(payload))
+        r = requests.put(url, headers=headers, data=json.dumps(payload))
         return r.status_code in [200, 201]
     except Exception as e:
         st.error(f"Could not save: {e}")
@@ -468,18 +306,22 @@ st.markdown('<div class="section-label">Leave a Feedback</div>', unsafe_allow_ht
 
 import streamlit.components.v1 as components
 
-components.html("""
+# Check localStorage for submitted flag
+check_html = """
 <script>
     const done = localStorage.getItem('smartprice_fb_done');
-    const url  = new URL(window.location.href);
+    // Send value back to Streamlit via URL param
+    const url = new URL(window.location.href);
     if (done === '1' && !url.searchParams.get('fb_done')) {
         url.searchParams.set('fb_done', '1');
         window.history.replaceState({}, '', url.toString());
         window.location.reload();
     }
 </script>
-""", height=0)
+"""
+components.html(check_html, height=0)
 
+# 
 fb_done = st.query_params.get("fb_done", "0") == "1"
 
 if fb_done:
@@ -504,6 +346,7 @@ else:
             if fb_name.strip() and fb_comment.strip():
                 with st.spinner("Saving..."):
                     if save_feedback(fb_name.strip(), fb_rating, fb_comment.strip()):
+                        # Set localStorage flag permanently on this device
                         components.html("""
                         <script>
                             localStorage.setItem('smartprice_fb_done', '1');
@@ -523,23 +366,31 @@ if feedbacks:
     st.markdown(f'<div class="section-label">All Feedbacks ({len(feedbacks)})</div>', unsafe_allow_html=True)
     for fb in reversed(feedbacks):
         st.markdown(f"""
-        <div style="background:linear-gradient(145deg,rgba(14,165,233,0.08),rgba(99,102,241,0.12));
-            border:1px solid rgba(99,102,241,0.35); border-radius:14px;
-            padding:1rem; margin-bottom:0.9rem; overflow-wrap:break-word; word-break:break-word;">
-            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px; margin-bottom:0.4rem;">
-                <span style="font-family:'Orbitron',sans-serif; font-size:0.78rem; color:#38BDF8; font-weight:700;">
+        <div style="
+            background: linear-gradient(145deg, rgba(14,165,233,0.08), rgba(99,102,241,0.12));
+            border: 1px solid rgba(99,102,241,0.35);
+            border-radius: 14px;
+            padding: 1rem 1rem;
+            margin-bottom: 0.9rem;
+            box-sizing: border-box;
+            width: 100%;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        ">
+            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start; gap:4px; margin-bottom:0.4rem;">
+                <span style="font-family:'Orbitron',sans-serif; font-size:0.78rem; color:#38BDF8; font-weight:700; flex-shrink:0; max-width:60%;">
                     👤 {fb.get('name','')}
                 </span>
                 <span style="font-size:0.7rem; color:#6366F1;">{fb.get('time','')}</span>
             </div>
             <div style="font-size:0.92rem; margin-bottom:0.5rem;">{fb.get('rating','')}</div>
-            <div style="font-size:0.84rem; line-height:1.7; opacity:0.95;">"{fb.get('comment','')}"</div>
+            <div style="font-size:0.84rem; color:inherit; line-height:1.7; overflow-wrap:break-word; word-break:break-word; opacity:0.95;">"{fb.get('comment','')}"</div>
         </div>
         """, unsafe_allow_html=True)
 
 st.divider()
 
-# ── PRESENTATION ──────────────────────────────────────────────
+#        PRESENTATION 
 st.markdown('<div class="section-label">About SmartPrice AI</div>', unsafe_allow_html=True)
 
 pdf_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/final_smartpriceai.pdf"
@@ -548,7 +399,8 @@ viewer  = f"https://docs.google.com/viewer?url={pdf_url}&embedded=true"
 st.markdown(f"""
 <div style="position:relative;">
   <iframe src="{viewer}" width="100%" height="520px"
-    style="border:1px solid rgba(56,189,248,0.3);border-radius:16px;display:block;">
+    style="border:1px solid rgba(56,189,248,0.3);border-radius:16px;display:block;"
+    id="pdf-iframe">
   </iframe>
 </div>
 <div style="margin-top:0.6rem; text-align:center;">
